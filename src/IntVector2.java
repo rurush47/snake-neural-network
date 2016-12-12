@@ -1,7 +1,7 @@
 /**
  * Created by Rurarz on 23.11.2016.
  */
-public class IntVector2
+public class IntVector2 extends Object
 {
     public int x;
     public int y;
@@ -35,5 +35,52 @@ public class IntVector2
             IntVector2 intVec = (IntVector2)vec;
             return this.x == intVec.x && this.y == intVec.y;
         }
+    }
+
+    public IntVector2 copy()
+    {
+        return new IntVector2(x,y);
+    }
+
+    public static IntVector2 getClockwise(IntVector2 vec)
+    {
+        if(vec.equals(right))
+        {
+            return down;
+        }
+        else if (vec.equals(down))
+        {
+            return left;
+        }
+        else if (vec.equals(left))
+        {
+            return up;
+        }
+        else if (vec.equals(up))
+        {
+            return right;
+        }
+        return null;
+    }
+
+    public static IntVector2 getCounterClockwise(IntVector2 vec)
+    {
+        if(vec.equals(right))
+        {
+            return up;
+        }
+        else if (vec.equals(down))
+        {
+            return right;
+        }
+        else if (vec.equals(left))
+        {
+            return down;
+        }
+        else if (vec.equals(up))
+        {
+            return left;
+        }
+        return null;
     }
 }

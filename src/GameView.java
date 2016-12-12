@@ -5,14 +5,14 @@
 import java.awt.*;
 import javax.swing.*;
 
-public class View extends JPanel
+public class GameView extends JPanel
 {
 
     String board[][];
     JLabel scoreText;
     int score;
 
-    public View()
+    public GameView()
     {
         JFrame window = new JFrame();
         window.setBounds(400, 400, 400, 400);
@@ -46,17 +46,17 @@ public class View extends JPanel
                     if(board[i][j].equals("empty"))
                     {
                         g.setColor(Color.WHITE);
-                        g.fillRect(i*20,(Model.BOARDSIZE -1 -j)*20,20,20);
+                        g.fillRect(i*20,(Map.BOARDSIZE -1 -j)*20,20,20);
                     }
                     if(board[i][j].equals("body"))
                     {
                         g.setColor(Color.RED);
-                        g.fillRect(i*20,(Model.BOARDSIZE -1 -j)*20,20,20);
+                        g.fillRect(i*20,(Map.BOARDSIZE -1 -j)*20,20,20);
                     }
                     if(board[i][j].equals("apple"))
                     {
                         g.setColor(Color.BLUE);
-                        g.fillRect(i*20,(Model.BOARDSIZE -1 -j)*20,20,20);
+                        g.fillRect(i*20,(Map.BOARDSIZE -1 -j)*20,20,20);
                     }
                 }
             }

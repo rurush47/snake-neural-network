@@ -23,9 +23,15 @@ public class Neuron
         return Math.random()*2 - 1;
     }
 
-    public void addNewWeights(Vector<Double> weights)
+    public void addNewWeights(Vector<Double> genome)
     {
-        this.weights = weights;
+        int size = this.weights.size();
+        this.weights.clear();
+        for (int i = 0; i < size; i++)
+        {
+            this.weights.add(genome.get(0));
+            genome.remove(0);
+        }
     }
 
     public double getOutput(Vector<Double> inputs)
@@ -44,5 +50,10 @@ public class Neuron
     public static double sigmoid(double a)
     {
         return (1/(1 + Math.pow(Math.E, (-a/Configuration.ActivationResponse))));
+    }
+
+    public Vector<Double> getWeights()
+    {
+        return weights;
     }
 }

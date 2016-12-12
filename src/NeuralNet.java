@@ -55,8 +55,29 @@ public class NeuralNet
 
     public Vector<Double> getGenome()
     {
-        //TODO
-        return null;
+        Vector<Double> genome = new Vector<>();
+
+        for (int i = 0; i < layersList.size(); i++)
+        {
+            for (int j = 0; j < layersList.get(i).size(); j++)
+            {
+                Neuron neuron = layersList.get(i).getNeuronAt(j);
+                genome.addAll(neuron.getWeights());
+            }
+        }
+        return genome;
+    }
+
+    public void applyGenome(Vector<Double> genome)
+    {
+        for (int i = 0; i < layersList.size(); i++)
+        {
+            for (int j = 0; j < layersList.get(i).size(); j++)
+            {
+                Neuron neuron = layersList.get(i).getNeuronAt(j);
+                neuron.addNewWeights(genome);
+            }
+        }
     }
 
 }

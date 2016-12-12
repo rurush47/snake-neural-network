@@ -7,14 +7,18 @@ import java.util.TimerTask;
 
 public class Controller extends TimerTask implements KeyListener{
 
-    private View view;
-    private Model model;
+    private GameView gameGameView;
+    private GameView evolutionGameView;
+    private Map map;
+    private Snake snake;
+    public boolean continueEvolution = true;
 
-    public Controller()
+    public Controller(Snake snake)
     {
-        model = new Model(this);
-        view = new View();
-        view.addKeyListener(this);
+        this.snake = snake;
+        map = snake.getMap();
+        gameGameView = new GameView();
+        gameGameView.addKeyListener(this);
     }
 
     @Override
@@ -26,21 +30,13 @@ public class Controller extends TimerTask implements KeyListener{
     @Override
     public void keyPressed(KeyEvent e)
     {
-        if(e.getKeyCode() == KeyEvent.VK_A)
-        {
-            model.changeDirection(IntVector2.left);
-        }
-        if(e.getKeyCode() == KeyEvent.VK_D)
-        {
-            model.changeDirection(IntVector2.right);
-        }
-        if(e.getKeyCode() == KeyEvent.VK_W)
-        {
-            model.changeDirection(IntVector2.up);
-        }
         if(e.getKeyCode() == KeyEvent.VK_S)
         {
-            model.changeDirection(IntVector2.down);
+            continueEvolution = false;
+        }
+        if(e.getKeyCode() == KeyEvent.VK_SPACE)
+        {
+            map.gameOver();
         }
     }
 
@@ -50,20 +46,23 @@ public class Controller extends TimerTask implements KeyListener{
 
     }
 
-    public void update()
-    {
-        model.update();
-        view.updateBoard(model.getBoard(), model.getScore());
+    public void update() throws Exception {
+        snake.update();
+        gameGameView.updateBoard(map.getBoard(), map.getScore());
     }
 
-    public void gameOver()
+    public void addSnake(Snake snake)
     {
-
+        this.snake = snake;
     }
 
     @Override
     public void run()
     {
-        update();
+        try {
+            update();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

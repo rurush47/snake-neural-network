@@ -14,16 +14,20 @@ public class NeuralNetTest {
 
     @Test
     public void testSth() throws Exception {
-        NeuralNet net = new NeuralNet();
-        Vector<Double> inputs = new Vector();
 
-        inputs.add(0.3);
-        inputs.add(-0.5);
+        Snake snake = new Snake();
 
-        Vector<Double> outputs = net.update(inputs);
+        double dist = snake.getMap().getAppleDistance();
+        snake.update();
+        dist = snake.getMap().getAppleDistance();
+        snake.update();
+        dist = snake.getMap().getAppleDistance();
+        snake.update();
+        dist = snake.getMap().getAppleDistance();
+        snake.update();
+        dist = snake.getMap().getAppleDistance();
         int i = 0;
 
-        assert (true);
-    }
 
+    }
 }
