@@ -52,9 +52,9 @@ public class NeuralNet
         return outputs;
     }
 
-    public ArrayList<Double> getGenome()
+    public ArrayList<Object> getNeurons()
     {
-        ArrayList<Double> genome = new ArrayList<>();
+        ArrayList<Object> genome = new ArrayList<>();
 
         for (NeuronLayer aLayersList : layersList) {
             for (int j = 0; j < aLayersList.size(); j++) {
@@ -65,7 +65,7 @@ public class NeuralNet
         return genome;
     }
 
-    public void applyGenome(ArrayList<Double> genome)
+    public void applyNeurons(ArrayList<Double> genome)
     {
         for (NeuronLayer aLayersList : layersList) {
             for (int j = 0; j < aLayersList.size(); j++) {
@@ -74,5 +74,4 @@ public class NeuralNet
             }
         }
     }
-
 }

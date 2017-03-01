@@ -1,18 +1,18 @@
 package generic;
 
-import snake.Snake;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
-public class Population {
+public class Population<T> {
 
-    private ArrayList<Snake> snakes = new ArrayList<>();
+    private Class<T> type;
+    private ArrayList<Individual> individuals = new ArrayList<>();
     private int populationSize;
 
-    public Population(int size, boolean init)
+    public Population(int size, boolean init, Class<T> clazz)
+            throws InstantiationException, IllegalAccessException
     {
+        this.type = clazz;
         populationSize = size;
 
         if (init)
@@ -21,33 +21,32 @@ public class Population {
         }
     }
 
-    private void Init()
-    {
+    private void Init() throws IllegalAccessException, InstantiationException {
         for (int i = 0; i < populationSize; i++)
         {
-            Snake ind = new Snake();
-            snakes.add(ind);
+            Individual ind = (Individual) type.newInstance();
+            individuals.add(ind);
         }
     }
 
 
     public int getSize()
     {
-        return snakes.size();
+        return individuals.size();
     }
 
-    void addIndividual(Snake ind)
+    void addIndividual(Individual ind)
     {
-        snakes.add(ind);
+        individuals.add(ind);
     }
 
-    public Snake getFittest()
+    public Individual getFittest()
     {
-        if(!snakes.isEmpty())
+        if(!individuals.isEmpty())
         {
-            Snake fittest = snakes.get(0);
+            Individual fittest = individuals.get(0);
 
-            for (Snake ind : snakes) {
+            for (Individual ind : individuals) {
                 if (ind.fitness >= fittest.fitness) {
                     fittest = ind;
                 }
@@ -61,28 +60,28 @@ public class Population {
         }
     }
 
-    public Snake getIndividualAt(int index)
+    public Individual getIndividualAt(int index)
     {
-        return snakes.get(index);
+        return individuals.get(index);
     }
 
     public double getAverageFitness()
     {
         int sum = getTotalFitness();
-        return sum/ snakes.size();
+        return sum/ individuals.size();
     }
 
-    Snake getIndividualFromRoulette()
+    Individual getIndividualFromRoulette()
     {
         int sum = getTotalFitness();
         int rouletteSpin = (int) (Math.random() * sum);
         int currentSum = 0;
 
-        for (Snake currentSnake : snakes) {
-            currentSum += currentSnake.fitness;
+        for (Individual currentIndividual : individuals) {
+            currentSum += currentIndividual.fitness;
 
             if (currentSum >= rouletteSpin) {
-                return currentSnake;
+                return currentIndividual;
             }
         }
 
@@ -92,16 +91,20 @@ public class Population {
     private int getTotalFitness()
     {
         int sum = 0;
-        for (Snake snake : snakes) {
-            sum += snake.fitness;
+        for (Individual individual : individuals) {
+            sum += individual.fitness;
         }
 
         return sum;
     }
 
-    void sortByFitness()
+    public void sortByFitness()
     {
-        Collections.sort(snakes, (p1, p2) -> Double.valueOf(p2.getFitness()).compareTo(p1.getFitness()));
+        Collections.sort(individuals, (p1, p2) -> Double.valueOf(p2.fitness).compareTo(p1.fitness));
     }
 
+    public Class<T> getGenericType()
+    {
+        return type;
+    }
 }
