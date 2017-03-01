@@ -3,15 +3,16 @@ package snake;
 import neural_network.NeuralNet;
 import neural_network.Neuron;
 
-import java.util.Vector;
+import java.util.ArrayList;
+
 
 public class Snake {
 
     private NeuralNet brain;
     public double fitness = 0;
     private Map map;
-    private Vector<Double> netOutputs = new Vector<>();
-    private Vector<Double> mapOutputs = new Vector<>();
+    private ArrayList<Double> netOutputs = new ArrayList<>();
+    private ArrayList<Double> mapOutputs = new ArrayList<>();
 
     public Snake()
     {
@@ -26,12 +27,12 @@ public class Snake {
         netOutputs.add(Neuron.RandomDouble());
     }
 
-    public Vector<Double> getGenome()
+    public ArrayList<Double> getGenome()
     {
         return brain.getGenome();
     }
 
-    public void applyGenome(Vector<Double> genome)
+    public void applyGenome(ArrayList<Double> genome)
     {
         brain.applyGenome(genome);
     }

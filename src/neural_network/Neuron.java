@@ -2,11 +2,12 @@ package neural_network;
 
 import utils.Configuration;
 
-import java.util.Vector;
+import java.util.ArrayList;
+
 
 public class Neuron
 {
-    private Vector<Double> weights = new Vector<>();
+    private ArrayList<Double> weights = new ArrayList<>();
 
     public Neuron(int numberOfInputs)
     {
@@ -21,7 +22,7 @@ public class Neuron
         return Math.random()*2 - 1;
     }
 
-    public void addNewWeights(Vector<Double> genome)
+    public void addNewWeights(ArrayList<Double> genome)
     {
         int size = this.weights.size();
         this.weights.clear();
@@ -32,7 +33,7 @@ public class Neuron
         }
     }
 
-    public double getOutput(Vector<Double> inputs)
+    public double getOutput(ArrayList<Double> inputs)
     {
         double sum = 0;
         for (int i = 0; i < weights.size() - 1; i++)
@@ -40,7 +41,7 @@ public class Neuron
             sum += weights.get(i) * inputs.get(i);
         }
 
-        sum += weights.lastElement() * Configuration.Bias;
+        sum += weights.get(weights.size() - 1) * Configuration.Bias;
 
         return sigmoid(sum);
     }
@@ -50,7 +51,7 @@ public class Neuron
         return (1/(1 + Math.pow(Math.E, (-a/Configuration.ActivationResponse))));
     }
 
-    public Vector<Double> getWeights()
+    public ArrayList<Double> getWeights()
     {
         return weights;
     }

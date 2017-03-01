@@ -2,12 +2,12 @@ package neural_network;
 
 import utils.Configuration;
 
-import java.util.LinkedList;
-import java.util.Vector;
+import java.util.ArrayList;
+
 
 public class NeuralNet
 {
-    private LinkedList<NeuronLayer> layersList = new LinkedList<>();
+    private ArrayList<NeuronLayer> layersList = new ArrayList<>();
 
     public NeuralNet()
     {
@@ -23,20 +23,20 @@ public class NeuralNet
         layersList.add(new NeuronLayer(Configuration.NumberOfNeuronsPerLayer, Configuration.NumberOfOutputs));
     }
 
-    public Vector<Double> update(Vector<Double> inputs) throws Exception {
+    public ArrayList<Double> update(ArrayList<Double> inputs) throws Exception {
 
         if (inputs.size() != Configuration.NumberOfInputs)
         {
             throw new Exception("Input size doesn't match!");
         }
 
-        Vector<Double> outputs = new Vector<>();
+        ArrayList<Double> outputs = new ArrayList<>();
 
         for (int i = 0; i < layersList.size(); i++)
         {
             if(i > 0)
             {
-                inputs = (Vector<Double>) outputs.clone();
+                inputs = (ArrayList<Double>) outputs.clone();
             }
 
             outputs.clear();
@@ -52,9 +52,9 @@ public class NeuralNet
         return outputs;
     }
 
-    public Vector<Double> getGenome()
+    public ArrayList<Double> getGenome()
     {
-        Vector<Double> genome = new Vector<>();
+        ArrayList<Double> genome = new ArrayList<>();
 
         for (NeuronLayer aLayersList : layersList) {
             for (int j = 0; j < aLayersList.size(); j++) {
@@ -65,7 +65,7 @@ public class NeuralNet
         return genome;
     }
 
-    public void applyGenome(Vector<Double> genome)
+    public void applyGenome(ArrayList<Double> genome)
     {
         for (NeuronLayer aLayersList : layersList) {
             for (int j = 0; j < aLayersList.size(); j++) {

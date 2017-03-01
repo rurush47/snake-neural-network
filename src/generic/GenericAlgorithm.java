@@ -4,7 +4,7 @@ import neural_network.Neuron;
 import snake.Snake;
 import utils.Configuration;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class GenericAlgorithm {
     private static double crossoverRate = Configuration.CrossoverRate;
@@ -81,9 +81,9 @@ public class GenericAlgorithm {
     {
         Snake newBorn = new Snake();
 
-        Vector<Double> newGenome = new Vector<>();
-        Vector<Double> genome1 = ind1.getGenome();
-        Vector<Double> genome2 = ind2.getGenome();
+        ArrayList<Double> newGenome = new ArrayList<>();
+        ArrayList<Double> genome1 = ind1.getGenome();
+        ArrayList<Double> genome2 = ind2.getGenome();
 
         for(int i = 0; i < genome1.size(); i++)
         {
@@ -104,7 +104,7 @@ public class GenericAlgorithm {
 
     private static void mutate(Snake snake)
     {
-        Vector<Double> genome = snake.getGenome();
+        ArrayList<Double> genome = snake.getGenome();
 
         for (int i = 0; i < genome.size(); i++)
         {

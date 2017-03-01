@@ -1,10 +1,10 @@
 package neural_network;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 class NeuronLayer
 {
-    private LinkedList<Neuron> neurons = new LinkedList<>();
+    private ArrayList<Neuron> neurons = new ArrayList<>();
 
     NeuronLayer(int numberOfInputs, int numberOfNeurons)
     {

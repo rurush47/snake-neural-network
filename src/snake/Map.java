@@ -2,7 +2,6 @@ package snake; /**
  * Created by Rurarz on 23.11.2016.
  */
 
-import snake.Snake;
 import utils.Configuration;
 import utils.IntVector2;
 
@@ -76,14 +75,14 @@ public class Map {
         dirChanged = false;
     }
 
-    public void updateWithInput(Vector<Double> inputs) throws Exception {
+    public void updateWithInput(ArrayList<Double> inputs) throws Exception {
 
         if(inputs.size() != Configuration.NumberOfOutputs)
         {
             throw new Exception("Number of net outputs doesnt match configuration!");
         }
 
-        double dX = inputs.firstElement();
+        double dX = inputs.get(0);
 
         IntVector2 moveVec = movementDirection;
 
@@ -282,9 +281,9 @@ public class Map {
         }
     }
 
-    public Vector<Double> getOutputs()
+    public ArrayList<Double> getOutputs()
     {
-        Vector<Double> outputs = new Vector<>();
+        ArrayList<Double> outputs = new ArrayList<>();
 
         //headPos
         outputs.add((double)getHeadPos().x);
