@@ -11,7 +11,6 @@ import java.util.TimerTask;
 class Controller extends TimerTask implements KeyListener{
 
     private GameView gameGameView;
-    private GameView evolutionGameView;
     private Map map;
     private Snake snake;
     private boolean continueEvolution = true;
@@ -52,11 +51,6 @@ class Controller extends TimerTask implements KeyListener{
     private void update() throws Exception {
         snake.update();
         gameGameView.updateBoard(map.getBoard(), map.getScore());
-    }
-
-    public void addSnake(Snake snake)
-    {
-        this.snake = snake;
     }
 
     @Override

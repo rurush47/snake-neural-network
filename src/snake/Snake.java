@@ -8,7 +8,8 @@ import utils.Configuration;
 import java.util.ArrayList;
 
 
-public class Snake extends Individual{
+public class Snake extends Individual
+{
 
     private NeuralNet brain;
     private Map map;
@@ -18,6 +19,11 @@ public class Snake extends Individual{
     public Snake()
     {
         brain = new NeuralNet();
+        resetMap();
+    }
+
+    public void resetMap()
+    {
         map = new Map(this);
         Initialize();
     }
@@ -44,11 +50,6 @@ public class Snake extends Individual{
         double newDouble = (Double) gene;
         newDouble += Neuron.RandomDouble() * Configuration.MaxPerturbation;
         return newDouble;
-    }
-
-    @Override
-    public Individual createNew() {
-        return new Snake();
     }
 
     public void update() throws Exception {

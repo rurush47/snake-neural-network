@@ -1,18 +1,16 @@
-package view; /**
- * Created by Rurarz on 23.11.2016.
- */
+package view;
 
 import snake.Map;
 
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
 
 public class GameView extends JPanel
 {
 
-    String board[][];
-    JLabel scoreText;
-    int score;
+    private String board[][];
+    private JLabel scoreText;
+    private int score;
 
     public GameView()
     {
@@ -65,10 +63,4 @@ public class GameView extends JPanel
             scoreText.setText(score + "");
         }
     }
-
-    public void gameOver()
-    {
-        JOptionPane.showConfirmDialog(this, "game over");
-    }
-
 }

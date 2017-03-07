@@ -45,7 +45,6 @@ public class NeuralNet
             {
                 Neuron neuron = layersList.get(i).getNeuronAt(j);
                 outputs.add(neuron.getOutput(inputs));
-                int l = 0;
             }
         }
 
