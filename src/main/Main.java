@@ -2,8 +2,6 @@ package main;
 
 import generic.GenericAlgorithm;
 import generic.Population;
-import main.Controller;
-import main.EvolutionController;
 import snake.Snake;
 import utils.Configuration;
 import view.EvolutionView;
@@ -16,25 +14,22 @@ public class Main
 
         EvolutionView view = new EvolutionView();
         EvolutionController evolutionController = new EvolutionController(view);
+        Population initialPopulation = new Population<>(Configuration.PopulationSize, true, Snake.class);
 
-        Population initialPopulation = new Population(Configuration.PopulationSize, true);
-
-        int evolutions = 100000;
         int counter = 0;
-        //how many evolutions
-        //for (int k = 0; k < evolutions; k++)
+
         while (true)
         {
             if(evolutionController.continueEvolution)
             {
-                //how many ticks before evolution
+                //how many moves before evolution
                 for(int i = 0; i < Configuration.CyclesPerGeneration; i++)
                 {
                     boolean allDeath = true;
                     //for each snake make move
                     for (int j = 0; j < initialPopulation.getSize(); j++)
                     {
-                        Snake ind = initialPopulation.getIndividualAt(j);
+                        Snake ind = (Snake) initialPopulation.getIndividualAt(j);
                         if(!ind.getMap().death)
                         {
                             allDeath = false;
@@ -48,7 +43,27 @@ public class Main
                     }
                 }
                 counter++;
-                System.out.println(initialPopulation.getAverageFitness() + "  ||  " + String.format( "%.2f", (double) counter/*k/evolutions*100) + "%"*/));
+                System.out.println(initialPopulation.getAverageFitness() + "  ||  "
+                        + String.format( "%.2f", (double) counter));
+
+                if (Configuration.Elitism)
+                {
+                    if(Configuration.ElitismSize == 1)
+                    {
+                        Snake snake = (Snake) initialPopulation.getFittest();
+                        snake.resetMap();
+                    }
+                    else
+                    {
+                        initialPopulation.sortByFitness();
+                        for (int i = 0; i < Configuration.ElitismSize; i++)
+                        {
+                            Snake snake = (Snake) initialPopulation.getIndividualAt(i);
+                            snake.resetMap();
+                        }
+                    }
+                }
+
                 initialPopulation = GenericAlgorithm.evolve(initialPopulation);
             }
             else
@@ -62,11 +77,12 @@ public class Main
             //for each snake make move
             for (int j = 0; j < initialPopulation.getSize(); j++)
             {
-                initialPopulation.getIndividualAt(j).update();
+                Snake snake = (Snake) initialPopulation.getIndividualAt(j);
+                snake.update();
             }
         }
 
-        Snake best = initialPopulation.getFittest();
+        Snake best = (Snake) initialPopulation.getFittest();
 
 
         Controller controller = new Controller(best);

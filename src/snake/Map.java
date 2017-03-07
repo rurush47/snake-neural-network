@@ -1,45 +1,40 @@
-package snake; /**
- * Created by Rurarz on 23.11.2016.
- */
+package snake;
 
 import utils.Configuration;
 import utils.IntVector2;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Random;
 
-public class Map {
+public class Map
+{
     public static int BOARDSIZE = 12;
     private String[][] board = new String[BOARDSIZE][BOARDSIZE];
-    private LinkedList<IntVector2> emptyFields;
-    private LinkedList<IntVector2> snakeBody;
+    private ArrayList<IntVector2> emptyFields;
+    private ArrayList<IntVector2> snakeBody;
     private Random randomGenerator;
     private IntVector2 movementDirection;
     private IntVector2 applePos;
+    private IntVector2 headPos;
     private int score;
     private boolean dirChanged = false;
     private Snake snake;
     public boolean death = false;
-    //fitnnss booleans
-    private boolean movementPoints = true;
-    private boolean applePoints = true;
-    private boolean deathPenalty = false;
-    private boolean notEatingPenalty = false;
-    private boolean penalty = false;
+
     //fitness values
-    private int penaltyThreshold = 10;
-    private int ticksCounter = 0;
-    private int pointsPerMove = 1;
-    private int pointsPerApple = 100;
-    private int penaltyPoints = 1;
-    private int deathPenaltyPoints = 10;
+    private double pointsPerApple = 500;
+    private double speedBonus;
+    private static final double initialSpeedBonus = 400;
+    private static final double speedBonusDecay = 10;
 
 
 
     public Map(Snake snake)
     {
+        speedBonus = initialSpeedBonus;
         this.snake = snake;
-        emptyFields = new LinkedList<>();
-        snakeBody = new LinkedList<>();
+        emptyFields = new ArrayList<>();
+        snakeBody = new ArrayList<>();
         randomGenerator = new Random();
         score = 0;
 
@@ -63,23 +58,24 @@ public class Map {
 
     private void initialize()
     {
-        snakeBody.add(new IntVector2(BOARDSIZE/2, BOARDSIZE/2));
-        IntVector2 headPos = getHeadPos();
+        IntVector2 startPos = new IntVector2(BOARDSIZE/2, BOARDSIZE/2);
+        snakeBody.add(startPos);
+        headPos = startPos;
         changeCell(headPos, "body");
         instantiateApple();
     }
 
-    public void update()
+    private void update()
     {
         move();
         dirChanged = false;
     }
 
-    public void updateWithInput(ArrayList<Double> inputs) throws Exception {
+    void updateWithInput(ArrayList<Double> inputs) throws Exception {
 
         if(inputs.size() != Configuration.NumberOfOutputs)
         {
-            throw new Exception("Number of net outputs doesnt match configuration!");
+            throw new Exception("Number of net outputs doesn't match configuration!");
         }
 
         double dX = inputs.get(0);
@@ -106,7 +102,7 @@ public class Map {
 
     public void changeDirection(IntVector2 dir)
     {
-        if(dirChanged == false)
+        if(!dirChanged)
         {
             IntVector2 sumVec = IntVector2.add(dir, movementDirection);
             if(!sumVec.equals(new IntVector2(0,0)))
@@ -135,14 +131,7 @@ public class Map {
 
     private boolean rangeCheck(int x, int y)
     {
-        if (x < BOARDSIZE && y < BOARDSIZE && x >= 0 && y >= 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return x < BOARDSIZE && y < BOARDSIZE && x >= 0 && y >= 0;
     }
 
     private boolean rangeCheck(IntVector2 pos)
@@ -152,14 +141,7 @@ public class Map {
 
     private boolean isEmpty(int x, int y)
     {
-        if(board[x][y].equals("empty"))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return board[x][y].equals("empty");
     }
 
     private boolean isEmpty(IntVector2 vec)
@@ -169,14 +151,7 @@ public class Map {
 
     private boolean isApple(int x, int y)
     {
-        if(board[x][y].equals("apple"))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return board[x][y].equals("apple");
     }
 
     private boolean isApple(IntVector2 vec)
@@ -186,24 +161,24 @@ public class Map {
 
     private void move()
     {
-        IntVector2 newHeadPos = IntVector2.add(getHeadPos(), movementDirection);
+        headPos = IntVector2.add(getHeadPos(), movementDirection);
 
-        if(rangeCheck(newHeadPos))
+        if(rangeCheck(headPos))
         {
             //move
-            if (isEmpty(newHeadPos))
+            if (isEmpty(headPos))
             {
-                changeCell(newHeadPos, "body");
-                snakeBody.addFirst(newHeadPos);
-                changeCell(snakeBody.getLast(),"empty");
-                snakeBody.removeLast();
+                changeCell(headPos, "body");
+                snakeBody.add(0, headPos);
+                changeCell(snakeBody.get(snakeBody.size() - 1),"empty");
+                snakeBody.remove(snakeBody.size() - 1);
                 addMoveBonus();
             }
             //collect apple
-            else if (isApple(newHeadPos))
+            else if (isApple(headPos))
             {
-                changeCell(newHeadPos, "body");
-                snakeBody.addFirst(newHeadPos);
+                changeCell(headPos, "body");
+                snakeBody.add(0, headPos);
                 addScore();
                 instantiateApple();
                 addAppleBonus();
@@ -234,9 +209,9 @@ public class Map {
 
     }
 
-    private IntVector2 getHeadPos()
+    public IntVector2 getHeadPos()
     {
-        return snakeBody.get(0);
+        return headPos;
     }
 
     private void addScore()
@@ -267,8 +242,9 @@ public class Map {
         return score;
     }
 
-    public void resetBoard()
+    private void resetBoard()
     {
+        score = 0;
         emptyFields.clear();
         snakeBody.clear();
         for(int i = 0; i < BOARDSIZE; i++)
@@ -281,59 +257,68 @@ public class Map {
         }
     }
 
-    public ArrayList<Double> getOutputs()
+    ArrayList<Double> getOutputs()
     {
         ArrayList<Double> outputs = new ArrayList<>();
 
-        //headPos
-        outputs.add((double)getHeadPos().x);
-        outputs.add((double)getHeadPos().y);
-        //applePos
-        outputs.add((double)applePos.x);
-        outputs.add((double)applePos.x);
         //distance to apple
-        outputs.add(getAppleDistance());
-        //how far is obstacle in the front of the head
-        outputs.add((double) getObstacleDistance("front"));
-        //how far is obstacle on the left of the head
-        outputs.add((double) getObstacleDistance("left"));
-        //how far is obstacle on the right of the head
-        outputs.add((double) getObstacleDistance("right"));
+        outputs.add(getAppleDistanceX());
+        outputs.add(getAppleDistanceY());
+        //what is on front of snake's head
+        outputs.add((double) getObstacleNextToHead("front"));
+        //what is on left of snake's head
+        outputs.add((double) getObstacleNextToHead("left"));
+        //what is on right of snake's head
+        outputs.add((double) getObstacleNextToHead("right"));
 
         return outputs;
     }
 
-    public double getAppleDistance()
+    private double getAppleDistanceX()
     {
-        IntVector2 headPos = snakeBody.getFirst();
+        return Math.abs(getApplePos().x - getHeadPos().x);
+    }
+
+    private double getAppleDistanceY()
+    {
+        return Math.abs(getApplePos().y - getHeadPos().y);
+    }
+
+    private double getAppleDistance()
+    {
+        IntVector2 headPos = getHeadPos();
 
         return Math.sqrt(Math.pow(headPos.x - applePos.x, 2) + Math.pow(headPos.y - applePos.y, 2));
+    }
+
+    public IntVector2 getApplePos()
+    {
+        return applePos;
     }
 
     private int getObstacleDistance(String raycastDir)
     {
         IntVector2 moveDir;
 
-        if(raycastDir.equals("front"))
-        {
-            moveDir = movementDirection.copy();
-        }
-        else if(raycastDir.equals("right"))
-        {
-            moveDir = IntVector2.getClockwise(movementDirection);
-        }
-        else
-        {
-            moveDir = IntVector2.getCounterClockwise(movementDirection);
+        switch (raycastDir) {
+            case "front":
+                moveDir = movementDirection.copy();
+                break;
+            case "right":
+                moveDir = IntVector2.getClockwise(movementDirection);
+                break;
+            default:
+                moveDir = IntVector2.getCounterClockwise(movementDirection);
+                break;
         }
 
-        IntVector2 headPos = snakeBody.getFirst().copy();
+        IntVector2 headPos = getHeadPos().copy();
         int distance = 0;
 
         headPos = IntVector2.add(headPos, moveDir);
 
         while (rangeCheck(headPos.x, headPos.y)
-                && board[headPos.x][headPos.y] != "body")
+                && !board[headPos.x][headPos.y].equals("body"))
         {
             distance ++;
             headPos = IntVector2.add(headPos, moveDir);
@@ -342,33 +327,63 @@ public class Map {
         return distance;
     }
 
+    public int getObstacleNextToHead(String raycastDir)
+    {
+        IntVector2 moveDir;
+
+        switch (raycastDir) {
+            case "front":
+                moveDir = movementDirection.copy();
+                break;
+            case "right":
+                moveDir = IntVector2.getClockwise(movementDirection);
+                break;
+            default:
+                moveDir = IntVector2.getCounterClockwise(movementDirection);
+                break;
+        }
+
+        IntVector2 checkPos = IntVector2.add(getHeadPos(), moveDir);
+
+        if(rangeCheck(checkPos))
+        {
+            String cell = board[checkPos.x][checkPos.y];
+
+            if(cell.equals("apple"))
+            {
+                return 1;
+            }
+            else if(cell.equals("empty"))
+            {
+                return 0;
+            }
+        }
+        return -1;
+    }
+
     private void addMoveBonus()
     {
-        if(movementPoints && score >= 5)
-        {
-            applyPenalty(0.1 * snake.fitness);
-        }
+            speedBonus -= speedBonusDecay;
+            if(speedBonus <= 0)
+            {
+                speedBonus = 0;
+            }
+    }
+
+    public double getNormalizedAppleDistance()
+    {
+        double diagonal = Math.sqrt(2)*BOARDSIZE;
+        return 1 - ((diagonal - getAppleDistance())/diagonal);
     }
 
     private void addAppleBonus()
     {
-        if(applePoints)
-        {
-            snake.fitness += pointsPerApple;
-        }
+        snake.fitness += pointsPerApple + speedBonus;
+        speedBonus = initialSpeedBonus;
     }
 
     private void applyDeathPenalty()
     {
 
-    }
-
-    private void applyPenalty(double value)
-    {
-        snake.fitness -= value;
-        if(snake.fitness < 0)
-        {
-            snake.fitness = 0;
-        }
     }
 }

@@ -1,12 +1,13 @@
 package utils;
 
-public class IntVector2 {
+public class IntVector2
+{
     public int x;
     public int y;
-    private static IntVector2 up = new IntVector2(0,1);
-    private static IntVector2 down = new IntVector2(0,-1);
-    private static IntVector2 right = new IntVector2(1,0);
-    private static IntVector2 left = new IntVector2(-1,0);
+    public static IntVector2 up = new IntVector2(0,1);
+    public static IntVector2 down = new IntVector2(0,-1);
+    public static IntVector2 right = new IntVector2(1,0);
+    public static IntVector2 left = new IntVector2(-1,0);
 
 
     public IntVector2(int x, int y)

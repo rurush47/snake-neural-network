@@ -1,12 +1,11 @@
 package generic;
 
-import neural_network.Neuron;
-import snake.Snake;
 import utils.Configuration;
 
 import java.util.ArrayList;
 
-public class GenericAlgorithm {
+public class GenericAlgorithm
+{
     private static double crossoverRate = Configuration.CrossoverRate;
     private static double mutationRate = Configuration.MutationRate;
     private static int tournamentSelectionSize = Configuration.TournamentSelectionSize;
@@ -15,9 +14,10 @@ public class GenericAlgorithm {
     private static SelectionMode Mode = Configuration.Mode;
 
     public static Population evolve(Population population)
+            throws IllegalAccessException, InstantiationException
     {
         int populationSize = population.getSize();
-        Population newPopulation = new Population(populationSize, false);
+        Population newPopulation = new Population(populationSize, false, population.getGenericType());
 
         int offset = 0;
 
@@ -25,10 +25,10 @@ public class GenericAlgorithm {
         {
             if(elitismSize == 1)
             {
-                Snake fittest = population.getFittest();
+                Individual fittest = population.getFittest();
                 fittest.fitness = 0;
-                fittest.getMap().death = false;
-                newPopulation.addIndividual(fittest);
+                Individual fittestS = fittest;
+                newPopulation.addIndividual(fittestS);
                 offset = 1;
             }
             else
@@ -37,10 +37,10 @@ public class GenericAlgorithm {
                 offset = elitismSize;
                 for (int i = 0; i < elitismSize; i++)
                 {
-                    Snake newSnake = population.getIndividualAt(i);
-                    newSnake.fitness = 0;
-                    newSnake.getMap().death = false;
-                    newPopulation.addIndividual(newSnake);
+                    Individual newIndividual = population.getIndividualAt(i);
+                    newIndividual.fitness = 0;
+                    Individual newIndividualS = newIndividual;
+                    newPopulation.addIndividual(newIndividualS);
                 }
             }
         }
@@ -49,41 +49,41 @@ public class GenericAlgorithm {
         {
             for (int i = offset; i < populationSize; i++)
             {
-                Snake ind1 = tournamentSelection(population);
-                Snake ind2 = tournamentSelection(population);
-                Snake newSnake = crossoverIndividuals(ind1, ind2);
+                Individual ind1 = tournamentSelection(population);
+                Individual ind2 = tournamentSelection(population);
+                Individual newIndividual = crossoverIndividuals(ind1, ind2, population.getGenericType());
 
-                newPopulation.addIndividual(newSnake);
+                newPopulation.addIndividual(newIndividual);
             }
         }
         else if(Mode == SelectionMode.ROULETTE)
         {
             for (int i = offset; i < populationSize; i++) {
-                Snake ind1 = rouletteSelection(population);
-                Snake ind2 = rouletteSelection(population);
-                Snake newSnake = crossoverIndividuals(ind1, ind2);
+                Individual ind1 = rouletteSelection(population);
+                Individual ind2 = rouletteSelection(population);
+                Individual newIndividual = crossoverIndividuals(ind1, ind2, population.getGenericType());
 
-                newPopulation.addIndividual(newSnake);
+                newPopulation.addIndividual(newIndividual);
             }
         }
 
         //mutate population
         for (int i = offset; i < populationSize; i++)
         {
-            Snake ind = newPopulation.getIndividualAt(i);
+            Individual ind = newPopulation.getIndividualAt(i);
             mutate(ind);
         }
 
         return newPopulation;
     }
 
-    private static Snake crossoverIndividuals(Snake ind1, Snake ind2)
-    {
-        Snake newBorn = new Snake();
+    private static Individual crossoverIndividuals(Individual ind1, Individual ind2, Class type)
+            throws IllegalAccessException, InstantiationException {
+        Individual newBorn = (Individual) type.newInstance();
 
-        ArrayList<Double> newGenome = new ArrayList<>();
-        ArrayList<Double> genome1 = ind1.getGenome();
-        ArrayList<Double> genome2 = ind2.getGenome();
+        ArrayList<Object> newGenome = new ArrayList<>();
+        ArrayList<Object> genome1 = ind1.getGenome();
+        ArrayList<Object> genome2 = ind2.getGenome();
 
         for(int i = 0; i < genome1.size(); i++)
         {
@@ -102,27 +102,28 @@ public class GenericAlgorithm {
         return newBorn;
     }
 
-    private static void mutate(Snake snake)
+    private static void mutate(Individual individual)
     {
-        ArrayList<Double> genome = snake.getGenome();
+        ArrayList<Object> genome = individual.getGenome();
 
         for (int i = 0; i < genome.size(); i++)
         {
             if(Math.random() <= mutationRate)
             {
-                double newDouble = genome.get(i);
-                newDouble += Neuron.RandomDouble() * Configuration.MaxPerturbation;
+                Object newGene = genome.get(i);
+                newGene = individual.mutateGene(newGene);
                 genome.remove(i);
-                genome.add(i, newDouble);
+                genome.add(i, newGene);
             }
         }
 
-        snake.applyGenome(genome);
+        individual.applyGenome(genome);
     }
 
-    private static Snake tournamentSelection(Population population)
+    private static Individual tournamentSelection(Population population)
+            throws IllegalAccessException, InstantiationException
     {
-        Population tournament = new Population(tournamentSelectionSize, false);
+        Population tournament = new Population(tournamentSelectionSize, false, population.getGenericType());
 
         for (int i = 0; i < tournamentSelectionSize; i++) {
             int randomId = (int) (Math.random() * population.getSize());
@@ -132,7 +133,7 @@ public class GenericAlgorithm {
         return tournament.getFittest();
     }
 
-    private static Snake rouletteSelection(Population population)
+    private static Individual rouletteSelection(Population population)
     {
         return population.getIndividualFromRoulette();
     }

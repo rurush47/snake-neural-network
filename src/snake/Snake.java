@@ -1,15 +1,17 @@
 package snake;
 
+import generic.Individual;
 import neural_network.NeuralNet;
 import neural_network.Neuron;
+import utils.Configuration;
 
 import java.util.ArrayList;
 
 
-public class Snake {
+public class Snake extends Individual
+{
 
     private NeuralNet brain;
-    public double fitness = 0;
     private Map map;
     private ArrayList<Double> netOutputs = new ArrayList<>();
     private ArrayList<Double> mapOutputs = new ArrayList<>();
@@ -17,24 +19,37 @@ public class Snake {
     public Snake()
     {
         brain = new NeuralNet();
+        resetMap();
+    }
+
+    public void resetMap()
+    {
         map = new Map(this);
-        Init();
+        Initialize();
     }
 
-    private void Init()
-    {
+    @Override
+    public void Initialize() {
         netOutputs.add(Neuron.RandomDouble());
         netOutputs.add(Neuron.RandomDouble());
     }
 
-    public ArrayList<Double> getGenome()
+    public ArrayList<Object> getGenome()
     {
-        return brain.getGenome();
+        return brain.getNeurons();
     }
 
-    public void applyGenome(ArrayList<Double> genome)
+    @Override
+    public void applyGenome(ArrayList<Object> genome)
     {
-        brain.applyGenome(genome);
+        brain.applyNeurons((ArrayList<Double>)(ArrayList<?>) genome);
+    }
+
+    @Override
+    public Object mutateGene(Object gene) {
+        double newDouble = (Double) gene;
+        newDouble += Neuron.RandomDouble() * Configuration.MaxPerturbation;
+        return newDouble;
     }
 
     public void update() throws Exception {
@@ -47,15 +62,4 @@ public class Snake {
     {
         return map;
     }
-
-    public NeuralNet getNet()
-    {
-        return brain;
-    }
-
-    public double getFitness()
-    {
-        return fitness;
-    }
-
 }

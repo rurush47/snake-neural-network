@@ -4,7 +4,8 @@ import javax.swing.*;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class TextAreaOutputStream extends OutputStream {
+public class TextAreaOutputStream extends OutputStream
+{
     private JTextArea textControl;
 
     public TextAreaOutputStream( JTextArea control ) {
