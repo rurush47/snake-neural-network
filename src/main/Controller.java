@@ -13,7 +13,6 @@ class Controller extends TimerTask implements KeyListener{
     private GameView gameGameView;
     private Map map;
     private Snake snake;
-    private boolean continueEvolution = true;
 
     Controller(Snake snake)
     {
@@ -32,14 +31,7 @@ class Controller extends TimerTask implements KeyListener{
     @Override
     public void keyPressed(KeyEvent e)
     {
-        if(e.getKeyCode() == KeyEvent.VK_S)
-        {
-            continueEvolution = false;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_SPACE)
-        {
-            map.gameOver();
-        }
+
     }
 
     @Override
