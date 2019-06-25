@@ -22,6 +22,12 @@ public class Snake extends Individual
         resetMap();
     }
 
+    public Snake(NeuralNet neuralNet)
+    {
+        brain = neuralNet;
+        resetMap();
+    }
+
     public void resetMap()
     {
         map = new Map(this);
@@ -32,6 +38,11 @@ public class Snake extends Individual
     public void Initialize() {
         netOutputs.add(Neuron.RandomDouble());
         netOutputs.add(Neuron.RandomDouble());
+    }
+
+    public NeuralNet getNeuralNet()
+    {
+        return brain;
     }
 
     public ArrayList<Object> getGenome()

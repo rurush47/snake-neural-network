@@ -2,6 +2,7 @@ package generic;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Population<T> {
 
@@ -19,6 +20,13 @@ public class Population<T> {
         {
             Init();
         }
+    }
+
+    public Population(ArrayList<Individual> individuals, Class<T> clazz)
+    {
+        this.type = clazz;
+        this.individuals = individuals;
+        populationSize = individuals.size();
     }
 
     private void Init() throws IllegalAccessException, InstantiationException {
@@ -101,6 +109,11 @@ public class Population<T> {
     public void sortByFitness()
     {
         Collections.sort(individuals, (p1, p2) -> Double.valueOf(p2.fitness).compareTo(p1.fitness));
+    }
+
+    public ArrayList<Individual> getIndividuals()
+    {
+        return individuals;
     }
 
     public Class<T> getGenericType()

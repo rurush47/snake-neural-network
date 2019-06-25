@@ -1,5 +1,6 @@
 package main;
 
+import com.google.gson.Gson;
 import snake.Map;
 import snake.Snake;
 import view.GameView;

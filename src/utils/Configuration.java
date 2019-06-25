@@ -4,7 +4,8 @@ import generic.SelectionMode;
 
 public class Configuration
 {
-
+    public static String PopulationSavePath = "network.txt";
+    public static String ConfigPath = "config.txt";
     public static int DefaultNumberOfHiddenLayers = 1;
     public static int NumberOfInputs = 5;
     public static int NumberOfNeuronsPerLayer = 8;

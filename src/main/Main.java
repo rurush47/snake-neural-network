@@ -1,20 +1,40 @@
 package main;
 
+import com.google.gson.Gson;
 import generic.GenericAlgorithm;
 import generic.Population;
 import snake.Snake;
 import utils.Configuration;
 import view.EvolutionView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Timer;
 
 public class Main
 {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception
+    {
+//        File f = new File(Configuration.ConfigPath);
+//        if(f.exists() && !f.isDirectory())
+//        {
+//
+//        }
+//        else
+//        {
+//            Gson gson = new Gson();
+//            String json = gson.toJson(new Configuration());
+//
+//            try (PrintWriter out = new PrintWriter(Configuration.ConfigPath)) {
+//                out.println(json);
+//            } catch (FileNotFoundException ex) {
+//                ex.printStackTrace();
+//            }
+//        }
 
         EvolutionView view = new EvolutionView();
         EvolutionController evolutionController = new EvolutionController(view);
-        Population initialPopulation = new Population<>(Configuration.PopulationSize, true, Snake.class);
 
         int counter = 0;
 
@@ -27,9 +47,9 @@ public class Main
                 {
                     boolean allDeath = true;
                     //for each snake make move
-                    for (int j = 0; j < initialPopulation.getSize(); j++)
+                    for (int j = 0; j < evolutionController.population.getSize(); j++)
                     {
-                        Snake ind = (Snake) initialPopulation.getIndividualAt(j);
+                        Snake ind = (Snake) evolutionController.population.getIndividualAt(j);
                         if(!ind.getMap().death)
                         {
                             allDeath = false;
@@ -43,28 +63,28 @@ public class Main
                     }
                 }
                 counter++;
-                System.out.println(initialPopulation.getAverageFitness() + "  ||  "
+                System.out.println(evolutionController.population.getAverageFitness() + "  ||  "
                         + String.format( "%.2f", (double) counter));
 
                 if (Configuration.Elitism)
                 {
                     if(Configuration.ElitismSize == 1)
                     {
-                        Snake snake = (Snake) initialPopulation.getFittest();
+                        Snake snake = (Snake) evolutionController.population.getFittest();
                         snake.resetMap();
                     }
                     else
                     {
-                        initialPopulation.sortByFitness();
+                        evolutionController.population.sortByFitness();
                         for (int i = 0; i < Configuration.ElitismSize; i++)
                         {
-                            Snake snake = (Snake) initialPopulation.getIndividualAt(i);
+                            Snake snake = (Snake) evolutionController.population.getIndividualAt(i);
                             snake.resetMap();
                         }
                     }
                 }
 
-                initialPopulation = GenericAlgorithm.evolve(initialPopulation);
+                evolutionController.population = GenericAlgorithm.evolve(evolutionController.population);
             }
             else
             {
@@ -75,14 +95,14 @@ public class Main
         for(int i = 0; i < Configuration.CyclesPerGeneration; i++)
         {
             //for each snake make move
-            for (int j = 0; j < initialPopulation.getSize(); j++)
+            for (int j = 0; j < evolutionController.population.getSize(); j++)
             {
-                Snake snake = (Snake) initialPopulation.getIndividualAt(j);
+                Snake snake = (Snake) evolutionController.population.getIndividualAt(j);
                 snake.update();
             }
         }
 
-        Snake best = (Snake) initialPopulation.getFittest();
+        Snake best = (Snake) evolutionController.population.getFittest();
 
 
         Controller controller = new Controller(best);
