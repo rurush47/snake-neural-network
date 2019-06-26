@@ -1,0 +1,1 @@
+{"PopulationSavePath":"network.txt","DefaultNumberOfHiddenLayers":1,"NumberOfInputs":5,"NumberOfNeuronsPerLayer":1,"NumberOfOutputs":1,"Bias":-1,"ActivationResponse":1,"MaxPerturbation":0.1,"CrossoverRate":0.6,"MutationRate":0.1,"TournamentSelectionSize":5,"Elitism":true,"ElitismSize":4,"Mode":"TOURNAMENT","PopulationSize":70,"CyclesPerGeneration":200}

@@ -1,17 +1,18 @@
 package generic;
 
-import utils.Configuration;
+
+import main.EvolutionController;
 
 import java.util.ArrayList;
 
 public class GenericAlgorithm
 {
-    private static double crossoverRate = Configuration.CrossoverRate;
-    private static double mutationRate = Configuration.MutationRate;
-    private static int tournamentSelectionSize = Configuration.TournamentSelectionSize;
-    private static boolean elitism = Configuration.Elitism;
-    private static int elitismSize = Configuration.ElitismSize;
-    private static SelectionMode Mode = Configuration.Mode;
+    private static double crossoverRate = EvolutionController.Config.CrossoverRate;
+    private static double mutationRate = EvolutionController.Config.MutationRate;
+    private static int tournamentSelectionSize = EvolutionController.Config.TournamentSelectionSize;
+    private static boolean elitism = EvolutionController.Config.Elitism;
+    private static int elitismSize = EvolutionController.Config.ElitismSize;
+    private static SelectionMode Mode = EvolutionController.Config.Mode;
 
     public static Population evolve(Population population)
             throws IllegalAccessException, InstantiationException

@@ -7,31 +7,42 @@ import snake.Snake;
 import utils.Configuration;
 import view.EvolutionView;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Timer;
 
 public class Main
 {
     public static void main(String[] args) throws Exception
     {
-//        File f = new File(Configuration.ConfigPath);
-//        if(f.exists() && !f.isDirectory())
-//        {
-//
-//        }
-//        else
-//        {
-//            Gson gson = new Gson();
-//            String json = gson.toJson(new Configuration());
-//
-//            try (PrintWriter out = new PrintWriter(Configuration.ConfigPath)) {
-//                out.println(json);
-//            } catch (FileNotFoundException ex) {
-//                ex.printStackTrace();
-//            }
-//        }
+        File f = new File(Configuration.ConfigPath);
+        if(f.exists() && !f.isDirectory())
+        {
+            String contents = "";
+            try {
+                contents = new String(Files.readAllBytes(Paths.get(Configuration.ConfigPath)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Gson gson = new Gson();
+            EvolutionController.Config = gson.fromJson(contents, Configuration.class);
+        }
+        else
+        {
+            Configuration configuration = new Configuration();
+            EvolutionController.Config = configuration;
+
+            Gson gson = new Gson();
+            String json = gson.toJson(configuration);
+
+            try (PrintWriter out = new PrintWriter(Configuration.ConfigPath)) {
+                out.println(json);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+        }
 
         EvolutionView view = new EvolutionView();
         EvolutionController evolutionController = new EvolutionController(view);
@@ -43,7 +54,7 @@ public class Main
             if(evolutionController.continueEvolution)
             {
                 //how many moves before evolution
-                for(int i = 0; i < Configuration.CyclesPerGeneration; i++)
+                for(int i = 0; i < EvolutionController.Config.CyclesPerGeneration; i++)
                 {
                     boolean allDeath = true;
                     //for each snake make move
@@ -66,9 +77,9 @@ public class Main
                 System.out.println(evolutionController.population.getAverageFitness() + "  ||  "
                         + String.format( "%.2f", (double) counter));
 
-                if (Configuration.Elitism)
+                if (EvolutionController.Config.Elitism)
                 {
-                    if(Configuration.ElitismSize == 1)
+                    if(EvolutionController.Config.ElitismSize == 1)
                     {
                         Snake snake = (Snake) evolutionController.population.getFittest();
                         snake.resetMap();
@@ -76,7 +87,7 @@ public class Main
                     else
                     {
                         evolutionController.population.sortByFitness();
-                        for (int i = 0; i < Configuration.ElitismSize; i++)
+                        for (int i = 0; i < EvolutionController.Config.ElitismSize; i++)
                         {
                             Snake snake = (Snake) evolutionController.population.getIndividualAt(i);
                             snake.resetMap();
@@ -92,7 +103,7 @@ public class Main
             }
         }
 
-        for(int i = 0; i < Configuration.CyclesPerGeneration; i++)
+        for(int i = 0; i < EvolutionController.Config.CyclesPerGeneration; i++)
         {
             //for each snake make move
             for (int j = 0; j < evolutionController.population.getSize(); j++)

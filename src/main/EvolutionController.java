@@ -20,17 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class EvolutionController implements KeyListener
+public class EvolutionController implements KeyListener
 {
     Population population;
     boolean continueEvolution = true;
+    public static Configuration Config;
 
     EvolutionController(EvolutionView view)
     {
         view.addListener(this);
 
         try {
-            this.population = new Population<>(Configuration.PopulationSize, true, Snake.class);
+            this.population = new Population<>(EvolutionController.Config.PopulationSize, true, Snake.class);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -52,7 +53,7 @@ class EvolutionController implements KeyListener
         Gson gson = new Gson();
         String json = gson.toJson(brains);
 
-        try (PrintWriter out = new PrintWriter(Configuration.PopulationSavePath)) {
+        try (PrintWriter out = new PrintWriter(EvolutionController.Config.PopulationSavePath)) {
             out.println(json);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
@@ -63,7 +64,7 @@ class EvolutionController implements KeyListener
     {
         String contents = "";
         try {
-            contents = new String(Files.readAllBytes(Paths.get(Configuration.PopulationSavePath)));
+            contents = new String(Files.readAllBytes(Paths.get(EvolutionController.Config.PopulationSavePath)));
         } catch (IOException e) {
             e.printStackTrace();
         }

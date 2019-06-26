@@ -1,5 +1,6 @@
 package neural_network;
 
+import main.EvolutionController;
 import utils.Configuration;
 
 import java.util.ArrayList;
@@ -41,14 +42,14 @@ public class Neuron
             sum += weights.get(i) * inputs.get(i);
         }
 
-        sum += weights.get(weights.size() - 1) * Configuration.Bias;
+        sum += weights.get(weights.size() - 1) * EvolutionController.Config.Bias;
 
         return sigmoid(sum);
     }
 
     public static double sigmoid(double a)
     {
-        return (1/(1 + Math.pow(Math.E, (-a/Configuration.ActivationResponse))));
+        return (1/(1 + Math.pow(Math.E, (-a/EvolutionController.Config.ActivationResponse))));
     }
 
     public ArrayList<Double> getWeights()

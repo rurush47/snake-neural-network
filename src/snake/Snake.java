@@ -1,6 +1,7 @@
 package snake;
 
 import generic.Individual;
+import main.EvolutionController;
 import neural_network.NeuralNet;
 import neural_network.Neuron;
 import utils.Configuration;
@@ -59,7 +60,7 @@ public class Snake extends Individual
     @Override
     public Object mutateGene(Object gene) {
         double newDouble = (Double) gene;
-        newDouble += Neuron.RandomDouble() * Configuration.MaxPerturbation;
+        newDouble += Neuron.RandomDouble() * EvolutionController.Config.MaxPerturbation;
         return newDouble;
     }
 

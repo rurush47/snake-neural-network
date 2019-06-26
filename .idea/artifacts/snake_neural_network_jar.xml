@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="snake-neural-network:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/snake_neural_network_jar</output-path>
+    <root id="archive" name="snake-neural-network.jar">
+      <element id="module-output" name="snake-neural-network" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/gson-2.8.5.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -1,6 +1,6 @@
 package neural_network;
 
-import utils.Configuration;
+import main.EvolutionController;
 
 import java.util.ArrayList;
 
@@ -12,20 +12,20 @@ public class NeuralNet
     public NeuralNet()
     {
         //first Layer
-        layersList.add(new NeuronLayer(Configuration.NumberOfInputs, Configuration.NumberOfNeuronsPerLayer));
+        layersList.add(new NeuronLayer(EvolutionController.Config.NumberOfInputs, EvolutionController.Config.NumberOfNeuronsPerLayer));
 
-        for (int i = 0; i < Configuration.DefaultNumberOfHiddenLayers - 1; i++)
+        for (int i = 0; i < EvolutionController.Config.DefaultNumberOfHiddenLayers - 1; i++)
         {
-            layersList.add(new NeuronLayer(Configuration.NumberOfNeuronsPerLayer, Configuration.NumberOfNeuronsPerLayer));
+            layersList.add(new NeuronLayer(EvolutionController.Config.NumberOfNeuronsPerLayer, EvolutionController.Config.NumberOfNeuronsPerLayer));
         }
 
         //output layer
-        layersList.add(new NeuronLayer(Configuration.NumberOfNeuronsPerLayer, Configuration.NumberOfOutputs));
+        layersList.add(new NeuronLayer(EvolutionController.Config.NumberOfNeuronsPerLayer, EvolutionController.Config.NumberOfOutputs));
     }
 
     public ArrayList<Double> update(ArrayList<Double> inputs) throws Exception {
 
-        if (inputs.size() != Configuration.NumberOfInputs)
+        if (inputs.size() != EvolutionController.Config.NumberOfInputs)
         {
             throw new Exception("Input size doesn't match!");
         }

@@ -1,6 +1,6 @@
 package snake;
 
-import utils.Configuration;
+import main.EvolutionController;
 import utils.IntVector2;
 
 import java.util.ArrayList;
@@ -73,9 +73,9 @@ public class Map
 
     void updateWithInput(ArrayList<Double> inputs) throws Exception {
 
-        if(inputs.size() != Configuration.NumberOfOutputs)
+        if(inputs.size() != EvolutionController.Config.NumberOfOutputs)
         {
-            throw new Exception("Number of net outputs doesn't match configuration!");
+            throw new Exception("Number of net outputs doesn't match EvolutionController.Config!");
         }
 
         double dX = inputs.get(0);
